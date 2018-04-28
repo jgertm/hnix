@@ -43,6 +43,7 @@ import           Data.IORef
 import           Data.List
 import           Data.List.Split
 import           Data.Text (Text)
+import qualified Data.Text.IO as Text
 import qualified Data.Text as Text
 import           Data.Typeable
 import           Data.Void
@@ -443,6 +444,12 @@ instance (MonadFix m, MonadCatch m, MonadThrow m, MonadIO m,
             let dropTrailingLinefeed p = take (length p - 1) p
             return $ StorePath $ dropTrailingLinefeed out
           _ -> throwError $ "addPath: failed: nix-store --add " ++ show path
+
+    makeFile name contents = do
+        dir <- liftIO $ withSystemTempDirectory name
+        let file = dir </> name
+        liftIO $ Text.writeFile file contents
+
 
     makeAbsolutePath origPath = do
         origPathExpanded <- liftIO $ expandHomePath origPath

@@ -30,3 +30,6 @@ class MonadFile m => MonadEffects m where
     derivationStrict :: NValue m -> m (NValue m)
 
     nixInstantiateExpr :: String -> m (NValue m)
+
+    -- | Make a file given name and contents, import it into nix store and return the result
+    makeFile :: String -> Text -> m (NValue m)

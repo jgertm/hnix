@@ -177,6 +177,7 @@ builtinsList = sequence [
     , add' Normal   "substring"                  substring
     , add  Normal   "tail"                       tail_
     , add  TopLevel "throw"                      throw_
+    , add2 Normal   "toFile"                     toFile
     , add' Normal   "toJSON"
       (arity1 $ decodeUtf8 . LBS.toStrict . A.encodingToLazyByteString
                            . toEncodingSorted)
@@ -570,6 +571,9 @@ functionArgs fun = fun >>= \case
                 ParamSet s _ _ -> isJust <$> M.fromList s
     v -> throwError @String $ "builtins.functionArgs: expected function, got "
             ++ show v
+
+toFile :: MonadNix e m => m (NValue m) -> m (NValue m) -> m (NValue m)
+toFile = fromValue @Path >=> toNix @Path
 
 toPath :: MonadNix e m => m (NValue m) -> m (NValue m)
 toPath = fromValue @Path >=> toNix @Path
